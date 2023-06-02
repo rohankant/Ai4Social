@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Dynamic Form-Claim Capture</title>
+    <style>
+        h1 {
+          text-align: center;
+        }
+  
+        p {
+          text-align: center;
+        }
+  
+        div {
+          text-align: center;
+        }
+        body {
+        background-image: url('Bot.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        justify-content: center;
+        align-items: center;
+        height: 100vh; 
+        text-align: center;
+        }
+
+        form {
+        text-align: center;
+        }
+
+        #claim-form {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+  
+        button[type="submit"] {
+          margin-top: 20px;
+        }
+      </style>
+</head>
+<body>
+	<h1>Claim Capture Form Ai4Social</h1>
+	<form id="claim-form">
+	</form>
+	<button type="submit" onclick="submitForm()">Submit</button>
+	<div id="json-result"></div>
+	<script>
+		// The JSON object containing the field names and attributes
+		var jsonFields = {
+    "Name": {
+        "type": "text",
+        "label": "Name",
+        "required": true
+    },
+    "Number": {
+        "type": "number",
+        "label": "Number",
+        "required": true,
+        "min": 1000000000,
+        "max": 9999999999
+    },
+    "Email": {
+        "type": "email",
+        "label": "Email",
+        "required": true,
+        "pattern": "^\\S+@\\S+\\.\\S+$"
+    },
+    "Input Language": {
+        "type": "text",
+        "label": "IP Language",
+        "required": true
+    },
+    "Output Language": {
+        "type": "text",
+        "label": "OP Language",
+        "required": true
+    },
+    "Date": {
+        "type": "date",
+        "label": "Date",
+        "required": true,
+        "min": "2023-01-01",
+        "max": "2023-12-31"
+    }
+};
+		// Function to create dynamic fields
+		function createFields() {
+			var form = document.getElementById("claim-form");
+			for (var key in jsonFields) {
+				if (jsonFields.hasOwnProperty(key)) {
+					var field = jsonFields[key];
+					var label = document.createElement("label");
+					label.innerHTML = field.label;
+					var input = document.createElement("input");
+					input.setAttribute("type", field.type);
+					input.setAttribute("name", key);
+					form.appendChild(label);
+					form.appendChild(input);
+                    form.appendChild(document.createElement("br"));
+                    form.appendChild(document.createElement("br"));
+                    form.appendChild(document.createElement("br"));
+				}
+			}
+		}
+	 	// Function to capture form data and convert it to JSON object
+         function captureData() {
+        var form = document.getElementById("claim-form");
+        var formData = new FormData(form);
+        var jsonResult = {};
+        for (var key in jsonFields) {
+        if (jsonFields.hasOwnProperty(key)) {
+            var field = jsonFields[key];
+            var value = formData.get(key);
+            if (field.required && !value) {
+                alert(field.label + " is required.");
+                return null;
+            }
+            if (field.pattern && !new RegExp(field.pattern).test(value)) {
+                alert(field.label + " is not in the correct format.");
+                return null;
+            }
+            if (field.min && value < field.min) {
+                alert(field.label + " must be greater than or equal to " + field.min + ".");
+                return null;
+            }
+            if (field.max && value > field.max) {
+                alert(field.label + " must be less than or equal to " + field.max + ".");
+                return null;
+            }
+            jsonResult[key] = value;
+        }
+    }
+    return jsonResult;
+    console.log(jsonResult);
+}
+
+		// Function to submit form and display JSON object
+		// Function to submit form and send data to server
+        function submitForm() {
+        event.preventDefault();
+        var formData = new FormData(document.getElementById("claim-form"));
+        var jsonResultDiv = document.getElementById("json-result");
+        var jsonResult = {};
+        for (var key in jsonFields) {
+        if (jsonFields.hasOwnProperty(key)) {
+            var field = jsonFields[key];
+            var value = formData.get(key);
+            if (field.required && !value) {
+                alert(field.label + " is required.");
+                return;
+            }
+            if (field.pattern && !new RegExp(field.pattern).test(value)) {
+                alert(field.label + " is not in the correct format.");
+                return;
+            }
+            if (field.min && value < field.min) {
+                alert(field.label + " must be greater than or equal to " + field.min + ".");
+                return;
+            }
+            if (field.max && value > field.max) {
+                alert(field.label + " must be less than or equal to " + field.max + ".");
+                return;
+            }
+            jsonResult[key] = value;
+        }
+    }
+    jsonResultDiv.innerHTML = JSON.stringify(jsonResult, null, 2);
+    var jsonData = {};
+    for (var key of formData.keys()) {
+        jsonData[key] = formData.get(key);
+    }
+    var jsonDataString = JSON.stringify(jsonData);
+    // Send form data to server
+    fetch('/Internship%20Folder/Data.php', {  // Change the endpoint to your PHP script
+        method: 'POST',
+        body: jsonDataString,
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.text())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+}
+
+		createFields();
+	</script>
+</body>
+</html>
