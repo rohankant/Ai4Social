@@ -4,3 +4,6 @@ Make a new folder in htdocs and name it Ai4, import these files in Ai4 folder.<b
 Turn on XAMPP control panel and turn on Apache and MySQL Services.<br>
 Go to web browser and type localhost/Ai4
 ![image](https://github.com/rohankant/Ai4Social/assets/85503948/f6a8f020-e3c6-400b-98ef-9615c7c4619b)
+The JSON object is being stored in the database
+![image](https://github.com/rohankant/Ai4Social/assets/85503948/6400c1dc-fa4f-4347-976f-c116b4260285)
+
